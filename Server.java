@@ -1,32 +1,47 @@
 package sockets_lab_1;
 
+//package sockets_lab_2;
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Server {
+public class MTServer {
 
 	public static void main(String args[]) {
-		
+		ServerSocket client;
+		Socket socket;
+		// CommThread ct;
+		Scanner input = new Scanner(System.in);
+		String sendmsg;
+		String recmsg;
+		int requests = 0;
 		try {
 			
-			ServerSocket ss = new ServerSocket(2222);
+			//Waiting for client
 			System.out.println("Waiting for client request");
-			Socket client = ss.accept();
-			System.out.println("Accepted connection request");
-			Scanner input = new Scanner(System.in);
+			client = new ServerSocket(2225);
+			socket = client.accept();
+			//accept and Now connected with client!
+			System.out.println("New client is pop up!");
+			
+			//True bcz server always remain open for clients
 			while (true) {
+				
+				//Server msg Send to client
+				System.out.print("Server: ");
+				sendmsg = input.nextLine();
+				PrintStream ps = new PrintStream(socket.getOutputStream());
+				ps.println("Server: " + sendmsg);
 
-				// receving
-				InputStreamReader isr = new InputStreamReader(client.getInputStream());
-				BufferedReader br = new BufferedReader(isr);
-				String str = br.readLine();
+				// client msg receive that he/she send!
+				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				recmsg = br.readLine();
+				System.out.println(recmsg);
 
-				// sending
-				PrintStream ps = new PrintStream(client.getOutputStream());
-				ps.println("Server1: " + input.nextLine());
-				System.out.println(ps);
-
+				// System.out.println("Accepted Request# "+requests);
+				// ct=new CommThread(client);
+				// ct.start();
 			}
 		} catch (Exception e) {
 			System.out.println(e);
